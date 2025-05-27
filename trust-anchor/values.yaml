@@ -1,0 +1,58 @@
+# -- MySql - database for trust-anchor
+mysql:
+  enabled: true
+
+  # -- persistence configuration
+  primary:
+    persistence:
+      # -- use one of the classes provided by the cluster
+      storageClass: local-path
+  
+  ## defaults
+  
+  # -- allows to set a fixed name for the services
+  fullnameOverride: trust-anchor-mysql
+  # -- configure authentication to mysql
+  auth:
+    # -- name of the secret to take the password from
+    existingSecret: mysql-database-secret
+  # -- scripts to be executed on db startup
+  initdbScripts:
+    create.sql: |
+      CREATE DATABASE tirdb;
+
+
+# -- Trusted Issuers List
+trusted-issuers-list:
+  enabled: true
+
+  # -- allow public access to the list through ingress controller
+  ingress:
+    tir:
+      enabled: true
+      hosts:
+        - host: tir.127.0.0.1.nip.io
+    til:
+      enabled: true
+      hosts:
+        - host: til.127.0.0.1.nip.io
+
+  ## defaults
+
+  # -- allows to set a fixed name for the services 
+  fullnameOverride: tir
+  # -- connection to the database
+  database:
+    # -- use persistence
+    persistence: true
+    # -- name of teh db user
+    username: root
+    # -- configuration for the existing secret to get the passwords from
+    existingSecret:
+      enabled: true
+      name: mysql-database-secret
+      key: mysql-root-password
+    # -- host of the database
+    host: trust-anchor-mysql 
+    # -- name of the schema inside the database
+    name: tirdb

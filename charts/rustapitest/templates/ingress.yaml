@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rustapitest-ingress
+  namespace: provider
+spec:
+  rules:
+    - host: rustapitest.127.0.0.1.nip.io
+      http:
+        paths:
+          - backend:
+              service:
+                name: rustapitest
+                port:
+                  number: 8085
+            path: /
+            pathType: Prefix

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: rustapitest
+  name: rustapitest
+  namespace: provider
+spec:
+  ports:
+    - name: tcp-8080-8085-ksfgp
+      nodePort: 30386
+      port: 8085
+      protocol: TCP
+      targetPort: 8085
+  selector:
+    k8s-app: rustapitest
+  type: LoadBalancer

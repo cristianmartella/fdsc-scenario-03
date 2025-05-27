@@ -1,0 +1,15 @@
+GET http://172.17.0.2:8085/users
+
+###
+
+GET http://rustapitest.127.0.0.1.nip.io:8080/users
+
+###
+
+POST http://rustapitest.127.0.0.1.nip.io:8080/users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "qwer@qwer.qw"
+}
