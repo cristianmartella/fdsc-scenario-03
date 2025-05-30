@@ -1,0 +1,64 @@
+#@RUSTAPITEST-HOST = rustapitest.127.0.0.1.nip.io:8080
+@RUSTAPITEST-HOST = rustapitest.127.0.0.1.nip.io:8080
+
+@USER_ACCESS_TOKEN = eyJhbGciOiJSUzI1NiIsImtpZCI6ImVqTjNYUEtTN190N0hrZ2FYWnVZUU5jTmNNYjNMM0RFdTNWOVlJSmlBbEEiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicnVzdGFwaXRlc3Qtc2VydmljZSJdLCJjbGllbnRfaWQiOiJkaWQ6a2V5OnpEbmFlZTZRMTRwRUMxRjllNGJ1VzVQZFFNRHBxM05DVERVeWNCUTZQdUx5cmkxb0EiLCJleHAiOjE3NDg1NDA0MTcsImlzcyI6ImRpZDprZXk6ekRuYWVlNlExNHBFQzFGOWU0YnVXNVBkUU1EcHEzTkNURFV5Y0JRNlB1THlyaTFvQSIsImtpZCI6ImVqTjNYUEtTN190N0hrZ2FYWnVZUU5jTmNNYjNMM0RFdTNWOVlJSmlBbEEiLCJzdWIiOiIiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vd3d3LnczLm9yZy9ucy9jcmVkZW50aWFscy92MSJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJlbWFpbCI6InRlc3RAdXNlci5vcmciLCJmaXJzdE5hbWUiOiJUZXN0IiwibGFzdE5hbWUiOiJSZWFkZXIifSwiaWQiOiJ1cm46dXVpZDpjYTA3MTQzNy05MWFjLTQ1YmUtYWE0My04MDQzOWQzNTMzZWYiLCJpc3N1YW5jZURhdGUiOiIyMDI1LTA1LTI5VDE2OjI0OjU0WiIsImlzc3VlciI6ImRpZDprZXk6ekRuYWVmcTUyVUdSdWhNTGJEcmU2YXFrNDZEaTdhUkdCNmZ0VTZZNldqWFZhUGdENCIsInR5cGUiOlsiVXNlckNyZWRlbnRpYWwiXX19.8tKrp8d3WEebAMYiUj7sZnR1YGtdSuV0VM4dqCIaTLVWhzRRV8qR-o28V1Dy-tf1-uru5gVJg-gluGtwDRuhb9viA7EOCPenCzlMLlvfZZoswaBOlFepLppEB5vF37JqVlHCTEEntun6EsS8zOa1-zrlDx5_3UwoWZMMJ64RTh-wYe5l3VMvaDak_lNQFmzQ09NUoeDtpn9DESVgPEltWIVwEzNw-HKD58qSNE73wRAQJoWam4bwXvOP6-on-eZH-cqmqVO_c4jiky9yehSvtQ4hv5gj7GLFiD02zwLZEnOv3KqX1oNgwLeGzW6KL3nBRVfv91pwr8dPv2kaN5cKeQ
+GET http://172.17.0.2:8085/users
+
+###
+
+GET http://{{RUSTAPITEST-HOST}}/users
+Authorization: Bearer {{USER_ACCESS_TOKEN}}
+
+###
+
+POST http://{{RUSTAPITEST-HOST}}/users
+Authorization: Bearer {{USER_ACCESS_TOKEN}}
+Content-Type: application/json
+
+{
+    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
+    "type": "K8SCluster",
+    "name": "John Doe",
+    "email": "qwer@qwer.qw"
+}
+
+
+
+###
+
+GET http://credentials-config-service:8080/service
+
+###
+POST http://credentials-config-service:8080/service
+Content-Type: application/json
+
+{
+   "id":"rustapitest-service",
+   "defaultOidcScope":"default",
+   "oidcScopes":{
+      "default":[
+         {
+            "type":"UserCredential",
+            "trustedParticipantsLists":[
+                "http://tir.trust-anchor.svc.cluster.local:8080"
+            ],
+            "trustedIssuersLists":[
+               "http://trusted-issuers-list:8080"
+            ]
+         }
+      ],
+      "operator":[
+         {
+            "type":"OperatorCredential",
+            "trustedParticipantsLists":[
+               "http://tir.trust-anchor.svc.cluster.local:8080"
+            ],
+            "trustedIssuersLists":[
+               "http://trusted-issuers-list:8080"
+            ]
+         }
+      ]
+   }
+}
+
+curl --request POST http://credentials-config-service:8080/service --header 'content-type:application/json' --data '{"id":"rustapitest-service","defaultOidcScope":"default","oidcScopes":{"default":[{"type":"UserCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}],"operator":[{"type":"OperatorCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}]}}'

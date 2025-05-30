@@ -57,6 +57,29 @@ apisix:
   controlPlane:
     ###########################################################
     sidecars:
+      - name: register-ccs
+        image: alpine:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh", "-c", "
+          apk add --no-cache curl jq;
+          payload='{\"id\":\"rustapitest-service\",\"defaultOidcScope\":\"default\",\"oidcScopes\":{\"default\":[{\"type\":\"UserCredential\",\"trustedParticipantsLists\":[\"http://tir.trust-anchor.svc.cluster.local:8080\"],\"trustedIssuersLists\":[\"http://trusted-issuers-list:8080\"]}],\"operator\":[{\"type\":\"OperatorCredential\",\"trustedParticipantsLists\":[\"http://tir.trust-anchor.svc.cluster.local:8080\"],\"trustedIssuersLists\":[\"http://trusted-issuers-list:8080\"]}]}}';
+          status_code=0;
+          response='';
+          echo \"Registering service with credentials-config-service\";
+          while [ $status_code -ne 200 ] || [ -z $response ]; do
+            echo \"Sending request\";
+            response=$(curl -X POST http://credentials-config-service:8080/service \
+              -H \"Content-Type: application/json\" \
+              -d \"$payload\");
+            status_code=$(echo $response | jq -r '.status');
+            echo \"Response status code: $status_code\";
+            echo \"Response body: $response\";
+          done;
+          echo \"Service registered successfully\";
+          sleep infinity;
+          "
+        ]
+
       - name: test-maintenance
         image: alpine:latest
         imagePullPolicy: IfNotPresent
@@ -65,27 +88,45 @@ apisix:
           - -c
           - 'apk add curl; while true; do echo "Hello!"; sleep 30; done'
 
-      # - name: test-api
-      #   image: cristianmartella/rustapitest:0.1.0
-      #   imagePullPolicy: Always
-      #   ports:
-      #     - name: http
-      #       containerPort: 8085
-      #       protocol: TCP
-    # service:
-    #   extraPorts:
-    #   - name: test-api-port
-    #     port: 8080
-    #     targetPort: 8085
-        
+      - name: rustapitest
+        image: cristianmartella/rustapitest:0.1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 8085
+            protocol: TCP
+    service:
+      extraPorts:
+      - name: rustapitest-port
+        port: 8085
+        targetPort: 8085
+      # configuration for the rustapitest at the credentials-config-service
+  # ccs:
+  #   defaultOidcScope:
+  #     name: default
+  #   oidcScopes:
+  #     default:
+  #       - type: UserCredential
+  #         trustedParticipantsLists:
+  #           - http://tir.trust-anchor.svc.cluster.local:8080
+  #         trustedIssuersLists:
+  #           - http://trusted-issuers-list:8080
+  #     operator:
+  #       - type: OperatorCredential
+  #         trustedParticipantsLists:
+  #           - http://tir.trust-anchor.svc.cluster.local:8080
+  #         trustedIssuersLists:
+  #           - http://trusted-issuers-list:8080
+
 
     # ingress:
     #   enabled: true
-    #   hostname: mp-test-api-service.127.0.0.1.nip.io
+    #   hostname: rustapitest.127.0.0.1.nip.io
     #   paths:
     #     - "/"
-      # serviceName: test-api
-      #servicePort: 8085
+    #   pathType: Prexix
+    #   serviceName: provider-dsc-apisix-control-plane
+    #   servicePort: 8085
     ###########################################################
 
     # imagePullSecrets:
@@ -105,6 +146,9 @@ apisix:
       extraHosts:
         - name: mp-tmf-api.127.0.0.1.nip.io
           path: /
+        - name: rustapitest.127.0.0.1.nip.io
+          path: /
+      extraPaths:               
   catchAllRoute:
     enabled: false
   routes: |-
@@ -182,12 +226,50 @@ apisix:
           policy: policy/main
           with_body: true
     
-  # - uri: /users
-  #   host: mp-test-api-service.127.0.0.1.nip.io
-  #   upstream:
-  #     nodes:
-  #       test-api:8085: 1
-  #     type: roundrobin
+    - uri: /.well-known/openid-configuration
+      host: rustapitest.127.0.0.1.nip.io
+      upstream:
+        nodes:
+          verifier:3000: 1
+        type: roundrobin
+      plugins:
+        proxy-rewrite:
+            uri: /services/rustapitest-service/.well-known/openid-configuration
+
+    - uri: /.well-known/data-space-configuration
+      host: rustapitest.127.0.0.1.nip.io
+      upstream:
+        nodes:
+          dsconfig:3002: 1
+        type: roundrobin
+      plugins:
+        proxy-rewrite:
+          uri: /.well-known/data-space-configuration/data-space-configuration.json
+        response-rewrite:
+          headers:
+            set:
+              content-type: application/json
+
+    - uri: /*
+      host: rustapitest.127.0.0.1.nip.io
+      upstream:
+        nodes:
+          provider-dsc-apisix-control-plane:8085: 1
+        type: roundrobin
+      plugins:
+        # verify the jwt at the verifiers endpoint
+        openid-connect:
+          bearer_only: true
+          use_jwks: true
+          client_id: rustapitest-service
+          client_secret: unused
+          ssl_verify: false
+          discovery: http://verifier:3000/services/rustapitest-service/.well-known/openid-configuration
+        # request decisions at opa
+        opa:
+          host: "http://localhost:8181"
+          policy: policy/main
+          with_body: true
 
 # -- Open Policy Agent - PDP
 opa:

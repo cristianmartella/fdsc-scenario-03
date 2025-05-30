@@ -4,7 +4,7 @@ echo "*** Consumer deployment ***"
 
 consumer_root="$(builtin cd $(pwd)/..; pwd)/consumer"
 consumer_name=$(basename $consumer_root)
-consumer_identity_path="$consumer_root/consumer-identity"
+consumer_identity_path="$consumer_root/identity"
 DID_HELPER="$(pwd)/did-helper"
 
 PRIVATE_KEY="$consumer_identity_path/private-key.pem"
