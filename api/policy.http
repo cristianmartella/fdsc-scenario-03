@@ -7,7 +7,7 @@ GET http://{{PAP-HOST}}/policy
 
 
 ### 02. Delete a policy
-@02_POLICY-ID = mpmxlrkdkl
+@02_POLICY-ID = dowpsuwfdn
 
 DELETE http://{{PAP-HOST}}/policy/{{02_POLICY-ID}}
 
@@ -15,7 +15,7 @@ DELETE http://{{PAP-HOST}}/policy/{{02_POLICY-ID}}
 ### 03. Create a policy to allow any participant to interact with the rustapitest service
 @03_ENTITY-TYPE = *
 @03_ODRL-ASSIGNEE = vc:any
-@03_ODRL-ACTION = odrl:read
+@03_ODRL-ACTION = odrl:use
 
 POST http://{{PAP-HOST}}/policy
 Content-Type: application/json
@@ -38,16 +38,7 @@ Content-Type: application/json
         "odrl:target": {
             "@type": "odrl:AssetCollection",
             "odrl:source": "urn:asset",
-            "odrl:refinement": [
-                {
-                    "@type": "odrl:Constraint",
-                    "odrl:leftOperand": "ngsi-ld:entityType",
-                    "odrl:operator": {
-                        "@id": "odrl:eq"
-                    },
-                    "odrl:rightOperand": "{{03_ENTITY-TYPE}}"
-                }
-            ]
+            "odrl:refinement": []
         },
         "odrl:assignee": {
             "@id": "{{03_ODRL-ASSIGNEE}}"

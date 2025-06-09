@@ -57,28 +57,29 @@ apisix:
   controlPlane:
     ###########################################################
     sidecars:
-      - name: register-ccs
-        image: alpine:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c", "
-          apk add --no-cache curl jq;
-          payload='{\"id\":\"rustapitest-service\",\"defaultOidcScope\":\"default\",\"oidcScopes\":{\"default\":[{\"type\":\"UserCredential\",\"trustedParticipantsLists\":[\"http://tir.trust-anchor.svc.cluster.local:8080\"],\"trustedIssuersLists\":[\"http://trusted-issuers-list:8080\"]}],\"operator\":[{\"type\":\"OperatorCredential\",\"trustedParticipantsLists\":[\"http://tir.trust-anchor.svc.cluster.local:8080\"],\"trustedIssuersLists\":[\"http://trusted-issuers-list:8080\"]}]}}';
-          status_code=0;
-          response='';
-          echo \"Registering service with credentials-config-service\";
-          while [ $status_code -ne 200 ] || [ -z $response ]; do
-            echo \"Sending request\";
-            response=$(curl -X POST http://credentials-config-service:8080/service \
-              -H \"Content-Type: application/json\" \
-              -d \"$payload\");
-            status_code=$(echo $response | jq -r '.status');
-            echo \"Response status code: $status_code\";
-            echo \"Response body: $response\";
-          done;
-          echo \"Service registered successfully\";
-          sleep infinity;
-          "
-        ]
+      # ### DEPRECATED: not needed anymore, use the data service instead
+      # - name: register-ccs
+      #   image: alpine:latest
+      #   imagePullPolicy: IfNotPresent
+      #   command: ["/bin/sh", "-c", "
+      #     apk add --no-cache curl jq;
+      #     payload='{\"id\":\"rustapitest-service\",\"defaultOidcScope\":\"default\",\"oidcScopes\":{\"default\":[{\"type\":\"UserCredential\",\"trustedParticipantsLists\":[\"http://tir.trust-anchor.svc.cluster.local:8080\"],\"trustedIssuersLists\":[\"http://trusted-issuers-list:8080\"]}],\"operator\":[{\"type\":\"OperatorCredential\",\"trustedParticipantsLists\":[\"http://tir.trust-anchor.svc.cluster.local:8080\"],\"trustedIssuersLists\":[\"http://trusted-issuers-list:8080\"]}]}}';
+      #     status_code=0;
+      #     response='';
+      #     echo \"Registering service with credentials-config-service\";
+      #     while [ $status_code -ne 200 ] || [ -z $response ]; do
+      #       echo \"Sending request\";
+      #       response=$(curl -X POST http://credentials-config-service:8080/service \
+      #         -H \"Content-Type: application/json\" \
+      #         -d \"$payload\");
+      #       status_code=$(echo $response | jq -r '.status');
+      #       echo \"Response status code: $status_code\";
+      #       echo \"Response body: $response\";
+      #     done;
+      #     echo \"Service registered successfully\";
+      #     sleep infinity;
+      #     "
+      #   ]
 
       - name: test-maintenance
         image: alpine:latest
@@ -89,8 +90,8 @@ apisix:
           - 'apk add curl; while true; do echo "Hello!"; sleep 30; done'
 
       - name: rustapitest
-        image: cristianmartella/rustapitest:0.1.0
-        imagePullPolicy: IfNotPresent
+        image: cristianmartella/rustapitest:0.1.1
+        imagePullPolicy: Always
         ports:
           - name: http
             containerPort: 8085
@@ -100,23 +101,6 @@ apisix:
       - name: rustapitest-port
         port: 8085
         targetPort: 8085
-      # configuration for the rustapitest at the credentials-config-service
-  # ccs:
-  #   defaultOidcScope:
-  #     name: default
-  #   oidcScopes:
-  #     default:
-  #       - type: UserCredential
-  #         trustedParticipantsLists:
-  #           - http://tir.trust-anchor.svc.cluster.local:8080
-  #         trustedIssuersLists:
-  #           - http://trusted-issuers-list:8080
-  #     operator:
-  #       - type: OperatorCredential
-  #         trustedParticipantsLists:
-  #           - http://tir.trust-anchor.svc.cluster.local:8080
-  #         trustedIssuersLists:
-  #           - http://trusted-issuers-list:8080
 
 
     # ingress:
@@ -129,14 +113,6 @@ apisix:
     #   servicePort: 8085
     ###########################################################
 
-    # imagePullSecrets:
-    # - name: regcred
-          # registry: docker.io
-          # tag: 0.1.0
-        # /logs directory mounted on sidecar container (test-maintenance), mapped on parent's /usr/local/apisix/logs directory
-        # volumeMounts:
-        #   - name: apisix-logs
-        #     mountPath: /logs
   dataPlane:
     # -- configure the ingress to the data service
     ingress:
@@ -160,7 +136,7 @@ apisix:
         type: roundrobin
       plugins:
         proxy-rewrite:
-            uri: /services/data-service/.well-known/openid-configuration
+          uri: /services/data-service/.well-known/openid-configuration
     
     - uri: /.well-known/data-space-configuration
       host: mp-data-service.127.0.0.1.nip.io
@@ -234,7 +210,7 @@ apisix:
         type: roundrobin
       plugins:
         proxy-rewrite:
-            uri: /services/rustapitest-service/.well-known/openid-configuration
+          uri: /services/rustapitest-service/.well-known/openid-configuration
 
     - uri: /.well-known/data-space-configuration
       host: rustapitest.127.0.0.1.nip.io
