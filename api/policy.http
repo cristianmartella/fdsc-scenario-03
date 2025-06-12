@@ -7,15 +7,18 @@ GET http://{{PAP-HOST}}/policy
 
 
 ### 02. Delete a policy
-@02_POLICY-ID = dowpsuwfdn
+@02_POLICY-ID = hcsuaemmnk
 
 DELETE http://{{PAP-HOST}}/policy/{{02_POLICY-ID}}
 
 
 ### 03. Create a policy to allow any participant to interact with the rustapitest service
-@03_ENTITY-TYPE = *
-@03_ODRL-ASSIGNEE = vc:any
+# http://mp-data-service.127.0.0.1.nip.io:8080/ngsi-ld/v1/entities
 @03_ODRL-ACTION = odrl:use
+
+@03_ENTITY-TYPE = K8SCluster1
+
+@03_VC-TYPE = RustApiTestCredential
 
 POST http://{{PAP-HOST}}/policy
 Content-Type: application/json
@@ -38,13 +41,89 @@ Content-Type: application/json
         "odrl:target": {
             "@type": "odrl:AssetCollection",
             "odrl:source": "urn:asset",
-            "odrl:refinement": []
+            "odrl:refinement": [
+                {
+                    "@type": "odrl:Constraint",
+                    "odrl:leftOperand": "http:path",
+                    "odrl:operator": {
+                        "@id": "http:isInPath"
+                    },
+                    "odrl:rightOperand": {
+                        "@value": "http://rustapitest.127.0.0.1.nip.io:8080/users",
+                        "@type": "xsd:string"
+                    }
+                }
+            ]
         },
         "odrl:assignee": {
-            "@id": "{{03_ODRL-ASSIGNEE}}"
+            "odrl:assignee": {
+            "@type": "odrl:PartyCollection",
+            "odrl:source": "urn:user",
+            "odrl:refinement": {
+                "@type": "odrl:Constraint",
+                "odrl:leftOperand": {
+                    "@id": "vc:type"
+                },
+                "odrl:operator": {
+                    "@id": "odrl:hasPart"
+                },
+                "odrl:rightOperand": {
+                    "@value": "{{03_VC-TYPE}}",
+                    "@type": "xsd:string"
+                }
+            }
+        },
         },
         "odrl:action": {
             "@id": "{{03_ODRL-ACTION}}"
+        }
+    }
+}
+
+
+### 04. Create a policy to allow any participant to interact with the rustapitest service
+@04_ODRL-ASSIGNEE = vc:any
+@04_ODRL-ACTION = odrl:use
+
+@04_ENTITY-TYPE = K8SCluster2
+
+POST http://{{PAP-HOST}}/policy
+Content-Type: application/json
+
+{ 
+    "@context": {
+        "dc": "http://purl.org/dc/elements/1.1/",
+        "dct": "http://purl.org/dc/terms/",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "odrl": "http://www.w3.org/ns/odrl/2/",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "skos": "http://www.w3.org/2004/02/skos/core#"
+    },
+    "@id": "https://mp-operation.org/policy/common/type",
+    "@type": "odrl:Policy",
+    "odrl:permission": {
+        "odrl:assigner": {
+            "@id": "https://www.mp-operation.org/"
+        },
+        "odrl:target": {
+            "@type": "odrl:AssetCollection",
+            "odrl:source": "http://rustapitest.127.0.0.1.nip.io:8080/users",
+            "odrl:refinement": [
+                {
+                    "@type": "odrl:Constraint",
+                    "odrl:leftOperand": "ngsi-ld:entityType",
+                    "odrl:operator": {
+                        "@id": "odrl:eq"
+                    },
+                    "odrl:rightOperand": "{{04_ENTITY-TYPE}}"
+                }
+            ]
+        },
+        "odrl:assignee": {
+            "@id": "{{04_ODRL-ASSIGNEE}}"
+        },
+        "odrl:action": {
+            "@id": "{{04_ODRL-ACTION}}"
         }
     }
 }

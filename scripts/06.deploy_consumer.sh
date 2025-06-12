@@ -118,7 +118,7 @@ echo "Updating .participants.tmp file..."
 echo "$consumer_name" >> .participants.tmp
 
 echo "Deploying $consumer_name..."
-helm install consumer-dsc data-space-connector/data-space-connector --version 7.17.0 -f $consumer_root/values.yaml --namespace=consumer
+helm install consumer-dsc data-space-connector/data-space-connector --version 7.37.4 -f $consumer_root/values.yaml --namespace=consumer
 
 kubectl wait pod --all --for=condition=Ready -n consumer --timeout=300s && kill -INT $(pidof watch) 2>/dev/null &
 watch kubectl get pods -n consumer

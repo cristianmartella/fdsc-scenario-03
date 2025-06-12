@@ -1,29 +1,26 @@
-#@RUSTAPITEST-HOST = rustapitest.127.0.0.1.nip.io:8080
 @RUSTAPITEST-HOST = rustapitest.127.0.0.1.nip.io:8080
 
 @DATA_SERVICE_HOST = mp-data-service.127.0.0.1.nip.io:8080
 
-@USER_ACCESS_TOKEN_RAS = eyJhbGciOiJSUzI1NiIsImtpZCI6Ilp3Y2F0TXNOYkZoRWpoNTRZS2xRcG5KczVTWWRQWDkwNFVYbzFfd0hERm8iLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicnVzdGFwaXRlc3Qtc2VydmljZSJdLCJjbGllbnRfaWQiOiJkaWQ6a2V5OnpEbmFlZTZRMTRwRUMxRjllNGJ1VzVQZFFNRHBxM05DVERVeWNCUTZQdUx5cmkxb0EiLCJleHAiOjE3NDk0ODMzMTMsImlzcyI6ImRpZDprZXk6ekRuYWVlNlExNHBFQzFGOWU0YnVXNVBkUU1EcHEzTkNURFV5Y0JRNlB1THlyaTFvQSIsImtpZCI6Ilp3Y2F0TXNOYkZoRWpoNTRZS2xRcG5KczVTWWRQWDkwNFVYbzFfd0hERm8iLCJzdWIiOiIiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vd3d3LnczLm9yZy9ucy9jcmVkZW50aWFscy92MSJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJlbWFpbCI6InRlc3RAdXNlci5vcmciLCJmaXJzdE5hbWUiOiJUZXN0IiwibGFzdE5hbWUiOiJSZWFkZXIifSwiaWQiOiJ1cm46dXVpZDpkZjE4ZjE3My0xZDhmLTRkMTYtYTk4Mi1iODEzMzgxYjRlMTciLCJpc3N1YW5jZURhdGUiOiIyMDI1LTA2LTA5VDE0OjU5OjM1WiIsImlzc3VlciI6ImRpZDprZXk6ekRuYWVmcTUyVUdSdWhNTGJEcmU2YXFrNDZEaTdhUkdCNmZ0VTZZNldqWFZhUGdENCIsInR5cGUiOlsiVXNlckNyZWRlbnRpYWwiXX19.MF9QMKKtGCx1qIJRQ88hcQU-CFJO-TvjA9WBRaZgmDvolgA7ONDcnblZA9QQuelaZkA2fuKD9OeCLBJ52Ze-DtsamCfL_A6VrnljMpMys1FOgiaiVrQgoeGXoc9KgZEMBIHr_CyQeHVQ3XSTM4x2x8eFX1KCKhlGlZ8Y28Tzn7MnYzIb4oBDiNDciHQNAzsmFgIxiRcLBGeXbB_86dzQT_7L8HrtAWs3QA_P9GQ0_tXHHE2mwDwmxkjzmxy_arxwmwdp00K4-CTq9pvOgLcreOEUdFqqx-RwAH5eJy5EGSeQ81usaubnFzFeqAe5CkAmGmhGIhExIOhh4E4NnR9tTw
-
-@USER_ACCESS_TOKEN_DS = eyJhbGciOiJSUzI1NiIsImtpZCI6Ilp3Y2F0TXNOYkZoRWpoNTRZS2xRcG5KczVTWWRQWDkwNFVYbzFfd0hERm8iLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsiZGF0YS1zZXJ2aWNlIl0sImNsaWVudF9pZCI6ImRpZDprZXk6ekRuYWVlNlExNHBFQzFGOWU0YnVXNVBkUU1EcHEzTkNURFV5Y0JRNlB1THlyaTFvQSIsImV4cCI6MTc0OTQ4NDExNiwiaXNzIjoiZGlkOmtleTp6RG5hZWU2UTE0cEVDMUY5ZTRidVc1UGRRTURwcTNOQ1REVXljQlE2UHVMeXJpMW9BIiwia2lkIjoiWndjYXRNc05iRmhFamg1NFlLbFFwbkpzNVNZZFBYOTA0VVhvMV93SERGbyIsInN1YiI6IiIsInZlcmlmaWFibGVDcmVkZW50aWFsIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIiwiaHR0cHM6Ly93d3cudzMub3JnL25zL2NyZWRlbnRpYWxzL3YxIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoidGVzdEB1c2VyLm9yZyIsImZpcnN0TmFtZSI6IlRlc3QiLCJsYXN0TmFtZSI6IlJlYWRlciJ9LCJpZCI6InVybjp1dWlkOmRmMThmMTczLTFkOGYtNGQxNi1hOTgyLWI4MTMzODFiNGUxNyIsImlzc3VhbmNlRGF0ZSI6IjIwMjUtMDYtMDlUMTQ6NTk6MzVaIiwiaXNzdWVyIjoiZGlkOmtleTp6RG5hZWZxNTJVR1J1aE1MYkRyZTZhcWs0NkRpN2FSR0I2ZnRVNlk2V2pYVmFQZ0Q0IiwidHlwZSI6WyJVc2VyQ3JlZGVudGlhbCJdfX0.14MxOlWKenyOlmz0q22ix6RvNbfv0eGi_pfBD6uCflmuLlgKsMcbcquebaw483QWSXJehBJIJHIutloAy936IJM8cp8APwMrFsxjvWU85E0DcFR61hSnqwRZtPNb2lRBhv4JZ-yYD9Uf4syyCuHsGBExm3zy8lqKNN-anOYY3X6HHcrC57vvkVX-q_B6Is5Xg6sNJn3Z4QhKREH503tNBaFq2zmi4qePfle8TYcjsCp4v5NdYkmoyCZtxGvyQJwTkL8HS_jhICh9A1QYHUWADL_EiFBbYBhN-4E1ECBHpM-Y4zdlcQkSUqKyjXXrjw3HtT84oIiSFX0bz6i8Ne78Dw
+@USER_ACCESS_TOKEN = eyJhbGciOiJSUzI1NiIsImtpZCI6Ilp3Y2F0TXNOYkZoRWpoNTRZS2xRcG5KczVTWWRQWDkwNFVYbzFfd0hERm8iLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsiZGF0YS1zZXJ2aWNlIl0sImNsaWVudF9pZCI6ImRpZDprZXk6ekRuYWVlNlExNHBFQzFGOWU0YnVXNVBkUU1EcHEzTkNURFV5Y0JRNlB1THlyaTFvQSIsImV4cCI6MTc0OTQ5MzA0MywiaXNzIjoiZGlkOmtleTp6RG5hZWU2UTE0cEVDMUY5ZTRidVc1UGRRTURwcTNOQ1REVXljQlE2UHVMeXJpMW9BIiwia2lkIjoiWndjYXRNc05iRmhFamg1NFlLbFFwbkpzNVNZZFBYOTA0VVhvMV93SERGbyIsInN1YiI6IiIsInZlcmlmaWFibGVDcmVkZW50aWFsIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIiwiaHR0cHM6Ly93d3cudzMub3JnL25zL2NyZWRlbnRpYWxzL3YxIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoidGVzdEB1c2VyLm9yZyIsImZpcnN0TmFtZSI6IlRlc3QiLCJsYXN0TmFtZSI6IlJlYWRlciJ9LCJpZCI6InVybjp1dWlkOmRmMThmMTczLTFkOGYtNGQxNi1hOTgyLWI4MTMzODFiNGUxNyIsImlzc3VhbmNlRGF0ZSI6IjIwMjUtMDYtMDlUMTQ6NTk6MzVaIiwiaXNzdWVyIjoiZGlkOmtleTp6RG5hZWZxNTJVR1J1aE1MYkRyZTZhcWs0NkRpN2FSR0I2ZnRVNlk2V2pYVmFQZ0Q0IiwidHlwZSI6WyJVc2VyQ3JlZGVudGlhbCJdfX0.pCSYT-515suH2hq6YIyAhMs8jMGXSmQw137B8cg8dWTXCucCVdHoSkBZfkH_QuPkLXE9WSOOaQuY9yZR_Ul00G2wKSHrKgiwFv7pIxIZP4AmR8yhcIUfyIhmbGvjIIg9NZRI1P0I3uOnHNKZBHUS6cn10xUnCXUVPtcwIPbLkVe_NIdkLDjNUFy2Lvf7N1Mtcd-jsgALpoedSRgAjl6bZRJNfUfS6TrkLr-uzyZslbnCv6eOaaimJIFew40azTXC5Wv5MBjT_LAg1yTYbN85dUBkhIAzT0IWvPP44DWaHw-gHndqga_NiJVVQYfLZw61rKHZc7UMGKcKWuzYE8VPJg
 
 GET http://172.17.0.2:8085/users
 
 ###
 
 GET http://{{RUSTAPITEST-HOST}}/users
-Authorization: Bearer {{USER_ACCESS_TOKEN_RAS}}
+Authorization: Bearer {{USER_ACCESS_TOKEN}}
 
 ###
 
 POST http://{{RUSTAPITEST-HOST}}/users
 Accept: */*
 Content-Type: application/json
-Authorization: Bearer {{USER_ACCESS_TOKEN_RAS}}
+Authorization: Bearer {{USER_ACCESS_TOKEN}}
 
 {
     "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
-    "type": "K8SCluster",
+    "type": "K8SCluster2",
     "name": "John Doe",
     "email": "qwer@qwer.qw"
 }
@@ -34,11 +31,11 @@ Authorization: Bearer {{USER_ACCESS_TOKEN_RAS}}
 POST http://{{DATA_SERVICE_HOST}}/ngsi-ld/v1/entities
 Accept: */*
 Content-Type: application/json
-Authorization: Bearer {{USER_ACCESS_TOKEN_RAS}}
+Authorization: Bearer {{USER_ACCESS_TOKEN}}
 
 {
-    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace2",
-    "type": "K8SCluster",
+    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace11",
+    "type": "K8SCluster1",
     "name": "John Doe",
     "email": "qwer@qwer.qw"
 }
@@ -54,7 +51,7 @@ Content-Type: application/json
 
 {
    "id":"rustapitest-service",
-   "defaultOidcScope":"default",
+   "defaultOidcScope":"rustapitest",
    "oidcScopes":{
       "default":[
          {
@@ -77,8 +74,22 @@ Content-Type: application/json
                "http://trusted-issuers-list:8080"
             ]
          }
+      ],
+      "rustapitest":[
+         {
+            "type":"RustApiTestCredential",
+            "trustedParticipantsLists":[
+               "http://tir.trust-anchor.svc.cluster.local:8080"
+            ],
+            "trustedIssuersLists":[
+               "http://trusted-issuers-list:8080"
+            ]
+         }
       ]
    }
 }
 
 curl --request POST http://credentials-config-service:8080/service --header 'content-type:application/json' --data '{"id":"rustapitest-service","defaultOidcScope":"default","oidcScopes":{"default":[{"type":"UserCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}],"operator":[{"type":"OperatorCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}]}}'
+
+
+curl --request POST http://credentials-config-service:8080/service --header 'content-type:application/json' --data '{"id":"rustapitest-service","defaultOidcScope":"default","oidcScopes":{"default":[{"type":"UserCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}],"operator":[{"type":"OperatorCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}],"rustapitest":[{"type":"RustApiTestCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}]}}'

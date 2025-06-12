@@ -128,7 +128,7 @@ echo "Deploying the key into the cluster"
 kubectl create secret generic $provider_name-identity --from-file=$KEYSTORE -n $provider_name 2>/dev/null
 
 echo "Deploying $provider_name..."
-helm install $provider_name-dsc data-space-connector/data-space-connector --version 7.34.0 -f $provider_root/values.yaml --namespace=$provider_name
+helm install $provider_name-dsc data-space-connector/data-space-connector --version 7.37.4 -f $provider_root/values.yaml --namespace=$provider_name
 
 kubectl wait pod --selector=job-name!='tmf-api-registration' --all --for=condition=Ready -n $provider_name --timeout=300s &>/dev/null && kill -INT $(pidof watch) 2>/dev/null &
 watch kubectl get pods -n $provider_name

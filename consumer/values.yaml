@@ -136,7 +136,9 @@ keycloak:
             "vc.verifiable-credential.format": "jwt_vc",
             "vc.verifiable-credential.scope": "VerifiableCredential",
             "vc.operator-credential.format": "jwt_vc",
-            "vc.operator-credential.scope": "OperatorCredential"
+            "vc.operator-credential.scope": "OperatorCredential",
+            "vc.rustapitest-credential.format": "jwt_vc",
+            "vc.rustapitest-credential.scope": "RustApiTestCredential"
         },
         "protocolMappers": [
             {
@@ -155,7 +157,7 @@ keycloak:
                 "protocolMapper": "oid4vc-context-mapper",
                 "config": {
                     "context": "https://www.w3.org/2018/credentials/v1",
-                    "supportedCredentialTypes": "VerifiableCredential,UserCredential,OperatorCredential"
+                    "supportedCredentialTypes": "VerifiableCredential,UserCredential,OperatorCredential,RustApiTestCredential"
                 }
             },
             {
@@ -165,7 +167,7 @@ keycloak:
                 "config": {
                     "subjectProperty": "email",
                     "userAttribute": "email",
-                    "supportedCredentialTypes": "UserCredential,OperatorCredential"
+                    "supportedCredentialTypes": "UserCredential,OperatorCredential,RustApiTestCredential"
                 }
             },
             {
@@ -175,7 +177,7 @@ keycloak:
                 "config": {
                     "subjectProperty": "firstName",
                     "userAttribute": "firstName",
-                    "supportedCredentialTypes": "UserCredential,OperatorCredential"
+                    "supportedCredentialTypes": "UserCredential,OperatorCredential,RustApiTestCredential"
                 }
             },
             {
@@ -185,7 +187,7 @@ keycloak:
                 "config": {
                     "subjectProperty": "lastName",
                     "userAttribute": "lastName",
-                    "supportedCredentialTypes": "UserCredential,OperatorCredential"
+                    "supportedCredentialTypes": "UserCredential,OperatorCredential,RustApiTestCredential"
                 }
             }
         ],
