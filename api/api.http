@@ -2,16 +2,35 @@
 
 @DATA_SERVICE_HOST = mp-data-service.127.0.0.1.nip.io:8080
 
-@USER_ACCESS_TOKEN = eyJhbGciOiJSUzI1NiIsImtpZCI6Ilp3Y2F0TXNOYkZoRWpoNTRZS2xRcG5KczVTWWRQWDkwNFVYbzFfd0hERm8iLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsiZGF0YS1zZXJ2aWNlIl0sImNsaWVudF9pZCI6ImRpZDprZXk6ekRuYWVlNlExNHBFQzFGOWU0YnVXNVBkUU1EcHEzTkNURFV5Y0JRNlB1THlyaTFvQSIsImV4cCI6MTc0OTQ5MzA0MywiaXNzIjoiZGlkOmtleTp6RG5hZWU2UTE0cEVDMUY5ZTRidVc1UGRRTURwcTNOQ1REVXljQlE2UHVMeXJpMW9BIiwia2lkIjoiWndjYXRNc05iRmhFamg1NFlLbFFwbkpzNVNZZFBYOTA0VVhvMV93SERGbyIsInN1YiI6IiIsInZlcmlmaWFibGVDcmVkZW50aWFsIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIiwiaHR0cHM6Ly93d3cudzMub3JnL25zL2NyZWRlbnRpYWxzL3YxIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoidGVzdEB1c2VyLm9yZyIsImZpcnN0TmFtZSI6IlRlc3QiLCJsYXN0TmFtZSI6IlJlYWRlciJ9LCJpZCI6InVybjp1dWlkOmRmMThmMTczLTFkOGYtNGQxNi1hOTgyLWI4MTMzODFiNGUxNyIsImlzc3VhbmNlRGF0ZSI6IjIwMjUtMDYtMDlUMTQ6NTk6MzVaIiwiaXNzdWVyIjoiZGlkOmtleTp6RG5hZWZxNTJVR1J1aE1MYkRyZTZhcWs0NkRpN2FSR0I2ZnRVNlk2V2pYVmFQZ0Q0IiwidHlwZSI6WyJVc2VyQ3JlZGVudGlhbCJdfX0.pCSYT-515suH2hq6YIyAhMs8jMGXSmQw137B8cg8dWTXCucCVdHoSkBZfkH_QuPkLXE9WSOOaQuY9yZR_Ul00G2wKSHrKgiwFv7pIxIZP4AmR8yhcIUfyIhmbGvjIIg9NZRI1P0I3uOnHNKZBHUS6cn10xUnCXUVPtcwIPbLkVe_NIdkLDjNUFy2Lvf7N1Mtcd-jsgALpoedSRgAjl6bZRJNfUfS6TrkLr-uzyZslbnCv6eOaaimJIFew40azTXC5Wv5MBjT_LAg1yTYbN85dUBkhIAzT0IWvPP44DWaHw-gHndqga_NiJVVQYfLZw61rKHZc7UMGKcKWuzYE8VPJg
+# ./get_access_token_oid4vp.sh http://mp-data-service.127.0.0.1.nip.io:8080 $USER_CREDENTIAL UserCredential ../wallet-
+identity
+@USER_ACCESS_TOKEN = eyJhbGciOiJSUzI1NiIsImtpZCI6IlZUdk5hWmg3aG9ULXljTnFCSW1yX2N3Sk1WejJXMjJHaW1scXhGQ3hWRGsiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsiZGF0YS1zZXJ2aWNlIl0sImNsaWVudF9pZCI6ImRpZDprZXk6ekRuYWVlNlExNHBFQzFGOWU0YnVXNVBkUU1EcHEzTkNURFV5Y0JRNlB1THlyaTFvQSIsImV4cCI6MTc0OTgyMTU4MSwiaXNzIjoiZGlkOmtleTp6RG5hZWU2UTE0cEVDMUY5ZTRidVc1UGRRTURwcTNOQ1REVXljQlE2UHVMeXJpMW9BIiwia2lkIjoiVlR2TmFaaDdob1QteWNOcUJJbXJfY3dKTVZ6MlcyMkdpbWxxeEZDeFZEayIsInN1YiI6IiIsInZlcmlmaWFibGVDcmVkZW50aWFsIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIiwiaHR0cHM6Ly93d3cudzMub3JnL25zL2NyZWRlbnRpYWxzL3YxIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVtYWlsIjoidGVzdEB1c2VyLm9yZyIsImZpcnN0TmFtZSI6IlRlc3QiLCJsYXN0TmFtZSI6IlJlYWRlciJ9LCJpZCI6InVybjp1dWlkOmZiNzY3OTVmLWMxMDYtNDMxZC1iZDBlLTkxZGYyMGY4OTllYSIsImlzc3VhbmNlRGF0ZSI6IjIwMjUtMDYtMTNUMTM6MDI6MzJaIiwiaXNzdWVyIjoiZGlkOmtleTp6RG5hZWZxNTJVR1J1aE1MYkRyZTZhcWs0NkRpN2FSR0I2ZnRVNlk2V2pYVmFQZ0Q0IiwidHlwZSI6WyJVc2VyQ3JlZGVudGlhbCJdfX0.bal7lsRYpK2H-AGCK7RKqISc8StcFRMcnUgdTzajGB4h21bhFIodsBM03M_Ujqsj11ccP6XqiIndxqV_0DSvpjmLve_lA7I9bKmskf48AJ6SMGBhJexTyXGk7qIfGG-vSlaL7QHL2Bd14LYiyj2qOep9_s9LQUYlinLGOpxyBuem9QJp4aIbeRtVdsqeR0-H5rPVThvzKOUAbRgI8ACQ0bPoSlCau5EHDHJ9KwB62buLbLCFBaYNMBAB8e33ewQ5q6nCRDl1NRVRh01nqE2EJqK3sxPRqMGtrpy6Lno6QsM8B4YWiPDI6tinVc4Fz0brtMh4MxeLLEGeMyuz9mku-w
 
-GET http://172.17.0.2:8085/users
+# ./get_access_token_oid4vp.sh http://rustapitest.127.0.0.1.nip.io:8080 $RAT_CREDENTIAL RustApiTestCredential ../wallet-identity
+@RAT_ACCESS_TOKEN = eyJhbGciOiJSUzI1NiIsImtpZCI6IlZUdk5hWmg3aG9ULXljTnFCSW1yX2N3Sk1WejJXMjJHaW1scXhGQ3hWRGsiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOlsicnVzdGFwaXRlc3Qtc2VydmljZSJdLCJjbGllbnRfaWQiOiJkaWQ6a2V5OnpEbmFlZTZRMTRwRUMxRjllNGJ1VzVQZFFNRHBxM05DVERVeWNCUTZQdUx5cmkxb0EiLCJleHAiOjE3NDk4MjE2MzAsImlzcyI6ImRpZDprZXk6ekRuYWVlNlExNHBFQzFGOWU0YnVXNVBkUU1EcHEzTkNURFV5Y0JRNlB1THlyaTFvQSIsImtpZCI6IlZUdk5hWmg3aG9ULXljTnFCSW1yX2N3Sk1WejJXMjJHaW1scXhGQ3hWRGsiLCJzdWIiOiIiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vd3d3LnczLm9yZy9ucy9jcmVkZW50aWFscy92MSJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJlbWFpbCI6InRlc3RAdXNlci5vcmciLCJmaXJzdE5hbWUiOiJUZXN0IiwibGFzdE5hbWUiOiJSZWFkZXIifSwiaWQiOiJ1cm46dXVpZDo4MDA1NWU5My0zMWQ5LTQ3NGUtODI0Yy01ODlmNzEyY2UxOTQiLCJpc3N1YW5jZURhdGUiOiIyMDI1LTA2LTEzVDEzOjAyOjM2WiIsImlzc3VlciI6ImRpZDprZXk6ekRuYWVmcTUyVUdSdWhNTGJEcmU2YXFrNDZEaTdhUkdCNmZ0VTZZNldqWFZhUGdENCIsInR5cGUiOlsiUnVzdEFwaVRlc3RDcmVkZW50aWFsIl19fQ.xTp2K64N2M-e6vGz7yd-dU9K4TyCoa3eGk4-S_HopYifrFBbkjrum7yZkMcB5du3wumuahAIPbY1gPsD_Z_Cc_gnpRkrgKPg2Sj-WeQiwHtqWEhBDbJZZ9AMekVCd-vbjgMaYjpgt8LkqDQvvEWeLWY2swH6PGw7KzIr7K_iD1LF5wQufVFnkJlriV3HOGAb9lXjfHblXRZn8fPATKp0bHbUffqlwnshTeNWR-qxO1fo-e_MQ_iggr-kOlHmsPJYGQGwqD-zhGRmkkBIKxtlXaqnBq9JE8iEPE5TTxYLCaC6G5SUjV7gLBzUV_Qrt1lLNuYLu6xcfcqBBqdcrMN2qQ
 
 ###
 
 GET http://{{RUSTAPITEST-HOST}}/users
-Authorization: Bearer {{USER_ACCESS_TOKEN}}
+Authorization: Bearer {{RAT_ACCESS_TOKEN}}
 
-###
+
+### Test 01: Valid token scope (should succeed - 200 OK)
+
+POST http://{{RUSTAPITEST-HOST}}/users
+Accept: */*
+Content-Type: application/json
+Authorization: Bearer {{RAT_ACCESS_TOKEN}}
+
+{
+    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
+    "type": "K8SCluster2",
+    "name": "John Doe",
+    "email": "qwer@qwer.qw"
+}
+
+
+### Test 02: Invalid token scope (should fail - 403 Forbidden)
 
 POST http://{{RUSTAPITEST-HOST}}/users
 Accept: */*
@@ -25,8 +44,7 @@ Authorization: Bearer {{USER_ACCESS_TOKEN}}
     "email": "qwer@qwer.qw"
 }
 
-
-###
+### Test 03: Valid token scope with data service (should succeed - 201 Created)
 
 POST http://{{DATA_SERVICE_HOST}}/ngsi-ld/v1/entities
 Accept: */*
@@ -34,62 +52,37 @@ Content-Type: application/json
 Authorization: Bearer {{USER_ACCESS_TOKEN}}
 
 {
-    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace11",
-    "type": "K8SCluster1",
+    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
+    "type": "K8SCluster2",
     "name": "John Doe",
     "email": "qwer@qwer.qw"
 }
 
 
-###
+### Test 04: Valid token scope but wrong entity type (should fail - 403 Forbidden)
 
-GET http://credentials-config-service:8080/service
-
-###
-POST http://credentials-config-service:8080/service
+POST http://{{DATA_SERVICE_HOST}}/ngsi-ld/v1/entities
+Accept: */*
 Content-Type: application/json
+Authorization: Bearer {{USER_ACCESS_TOKEN}}
 
 {
-   "id":"rustapitest-service",
-   "defaultOidcScope":"rustapitest",
-   "oidcScopes":{
-      "default":[
-         {
-            "type":"UserCredential",
-            "trustedParticipantsLists":[
-                "http://tir.trust-anchor.svc.cluster.local:8080"
-            ],
-            "trustedIssuersLists":[
-               "http://trusted-issuers-list:8080"
-            ]
-         }
-      ],
-      "operator":[
-         {
-            "type":"OperatorCredential",
-            "trustedParticipantsLists":[
-               "http://tir.trust-anchor.svc.cluster.local:8080"
-            ],
-            "trustedIssuersLists":[
-               "http://trusted-issuers-list:8080"
-            ]
-         }
-      ],
-      "rustapitest":[
-         {
-            "type":"RustApiTestCredential",
-            "trustedParticipantsLists":[
-               "http://tir.trust-anchor.svc.cluster.local:8080"
-            ],
-            "trustedIssuersLists":[
-               "http://trusted-issuers-list:8080"
-            ]
-         }
-      ]
-   }
+    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
+    "type": "K8SCluster1",
+    "name": "John Doe",
+    "email": "qwer@qwer.qw"
 }
 
-curl --request POST http://credentials-config-service:8080/service --header 'content-type:application/json' --data '{"id":"rustapitest-service","defaultOidcScope":"default","oidcScopes":{"default":[{"type":"UserCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}],"operator":[{"type":"OperatorCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}]}}'
+### Test 05: Invalid token scope (should fail - 403 Forbidden)
 
+POST http://{{DATA_SERVICE_HOST}}/ngsi-ld/v1/entities
+Accept: */*
+Content-Type: application/json
+Authorization: Bearer {{RAT_ACCESS_TOKEN}}
 
-curl --request POST http://credentials-config-service:8080/service --header 'content-type:application/json' --data '{"id":"rustapitest-service","defaultOidcScope":"default","oidcScopes":{"default":[{"type":"UserCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}],"operator":[{"type":"OperatorCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}],"rustapitest":[{"type":"RustApiTestCredential","trustedParticipantsLists":["http://tir.trust-anchor.svc.cluster.local:8080"],"trustedIssuersLists":["http://trusted-issuers-list:8080"]}]}}'
+{
+    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
+    "type": "K8SCluster1",
+    "name": "John Doe",
+    "email": "qwer@qwer.qw"
+}

@@ -7,18 +7,14 @@ GET http://{{PAP-HOST}}/policy
 
 
 ### 02. Delete a policy
-@02_POLICY-ID = hcsuaemmnk
+@02_POLICY-ID = ilkcnlyvwt
 
 DELETE http://{{PAP-HOST}}/policy/{{02_POLICY-ID}}
 
 
 ### 03. Create a policy to allow any participant to interact with the rustapitest service
-# http://mp-data-service.127.0.0.1.nip.io:8080/ngsi-ld/v1/entities
-@03_ODRL-ACTION = odrl:use
-
-@03_ENTITY-TYPE = K8SCluster1
-
 @03_VC-TYPE = RustApiTestCredential
+@03_ODRL-ACTION = odrl:use
 
 POST http://{{PAP-HOST}}/policy
 Content-Type: application/json
@@ -49,14 +45,13 @@ Content-Type: application/json
                         "@id": "http:isInPath"
                     },
                     "odrl:rightOperand": {
-                        "@value": "http://rustapitest.127.0.0.1.nip.io:8080/users",
+                        "@value": "/users",
                         "@type": "xsd:string"
                     }
                 }
             ]
         },
         "odrl:assignee": {
-            "odrl:assignee": {
             "@type": "odrl:PartyCollection",
             "odrl:source": "urn:user",
             "odrl:refinement": {
@@ -73,16 +68,15 @@ Content-Type: application/json
                 }
             }
         },
-        },
         "odrl:action": {
             "@id": "{{03_ODRL-ACTION}}"
         }
     }
 }
 
+### 04. Allow any participant with a UserCredential to manage K8SCluster2 entity type on the data service
 
-### 04. Create a policy to allow any participant to interact with the rustapitest service
-@04_ODRL-ASSIGNEE = vc:any
+@04_VC-TYPE = UserCredential
 @04_ODRL-ACTION = odrl:use
 
 @04_ENTITY-TYPE = K8SCluster2
@@ -107,8 +101,19 @@ Content-Type: application/json
         },
         "odrl:target": {
             "@type": "odrl:AssetCollection",
-            "odrl:source": "http://rustapitest.127.0.0.1.nip.io:8080/users",
+            "odrl:source": "urn:asset",
             "odrl:refinement": [
+                {
+                    "@type": "odrl:Constraint",
+                    "odrl:leftOperand": "http:path",
+                    "odrl:operator": {
+                        "@id": "http:isInPath"
+                    },
+                    "odrl:rightOperand": {
+                        "@value": "/ngsi-ld/v1/entities",
+                        "@type": "xsd:string"
+                    }
+                },
                 {
                     "@type": "odrl:Constraint",
                     "odrl:leftOperand": "ngsi-ld:entityType",
@@ -120,7 +125,21 @@ Content-Type: application/json
             ]
         },
         "odrl:assignee": {
-            "@id": "{{04_ODRL-ASSIGNEE}}"
+            "@type": "odrl:PartyCollection",
+            "odrl:source": "urn:user",
+            "odrl:refinement": {
+                "@type": "odrl:Constraint",
+                "odrl:leftOperand": {
+                    "@id": "vc:type"
+                },
+                "odrl:operator": {
+                    "@id": "odrl:hasPart"
+                },
+                "odrl:rightOperand": {
+                    "@value": "{{04_VC-TYPE}}",
+                    "@type": "xsd:string"
+                }
+            }
         },
         "odrl:action": {
             "@id": "{{04_ODRL-ACTION}}"

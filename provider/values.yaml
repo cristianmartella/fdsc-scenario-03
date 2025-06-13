@@ -57,9 +57,7 @@ apisix:
   controlPlane:
     ###########################################################
     sidecars:
-      ### DEPRECATED: not needed anymore, use the data service instead
-      ### add policies per credential type -> RustApiTestCredential
-      ### ./get_access_token_oid4vp.sh http://rustapitest.127.0.0.1.nip.io:8080 $RAT_CREDENTIAL rustapitest ../wallet-identity
+      ### register the rustapitest service at the credentials-config-service with RustApiTestCredential scope
       - name: register-ccs
         image: alpine:latest
         imagePullPolicy: IfNotPresent
@@ -98,21 +96,12 @@ apisix:
           - name: http
             containerPort: 8085
             protocol: TCP
+    
     service:
       extraPorts:
       - name: rustapitest-port
         port: 8085
         targetPort: 8085
-
-
-    # ingress:
-    #   enabled: true
-    #   hostname: rustapitest.127.0.0.1.nip.io
-    #   paths:
-    #     - "/"
-    #   pathType: Prexix
-    #   serviceName: provider-dsc-apisix-control-plane
-    #   servicePort: 8085
     ###########################################################
 
   dataPlane:
@@ -126,7 +115,7 @@ apisix:
           path: /
         - name: rustapitest.127.0.0.1.nip.io
           path: /
-      extraPaths:               
+      extraPaths:
   catchAllRoute:
     enabled: false
   routes: |-
