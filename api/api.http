@@ -37,8 +37,8 @@ Content-Type: application/json
 Authorization: Bearer {{RAT_ACCESS_TOKEN}}
 
 {
-    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
-    "type": "K8SCluster2",
+    "id": "urn:ngsi-ld:K8SCluster:cluster-1",
+    "type": "K8SCluster",
     "name": "John Doe",
     "email": "qwer@qwer.qw"
 }
@@ -52,8 +52,8 @@ Content-Type: application/json
 Authorization: Bearer {{USER_ACCESS_TOKEN}}
 
 {
-    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
-    "type": "K8SCluster2",
+    "id": "urn:ngsi-ld:K8SCluster:cluster-1",
+    "type": "K8SCluster",
     "name": "John Doe",
     "email": "qwer@qwer.qw"
 }
@@ -66,8 +66,8 @@ Content-Type: application/json
 Authorization: Bearer {{USER_ACCESS_TOKEN}}
 
 {
-    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
-    "type": "K8SCluster2",
+    "id": "urn:ngsi-ld:K8SCluster:cluster-1",
+    "type": "K8SCluster",
     "name": "John Doe",
     "email": "qwer@qwer.qw"
 }
@@ -81,7 +81,7 @@ Content-Type: application/json
 Authorization: Bearer {{USER_ACCESS_TOKEN}}
 
 {
-    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
+    "id": "urn:ngsi-ld:K8SCluster:cluster-1",
     "type": "K8SCluster1",
     "name": "John Doe",
     "email": "qwer@qwer.qw"
@@ -95,8 +95,8 @@ Content-Type: application/json
 Authorization: Bearer {{RAT_ACCESS_TOKEN}}
 
 {
-    "id": "urn:ngsi-ld:K8SCluster:fancy-marketplace",
-    "type": "K8SCluster1",
+    "id": "urn:ngsi-ld:K8SCluster:cluster-1",
+    "type": "K8SCluster",
     "name": "John Doe",
     "email": "qwer@qwer.qw"
 }

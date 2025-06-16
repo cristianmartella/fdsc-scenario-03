@@ -1,6 +1,6 @@
 # FIWARE Data Space Connector custom service integration
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational)
+![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.0-informational)
 
 ## Maintainers
 
@@ -45,18 +45,25 @@
       - [5. Create a wallet for a Consumer's user](#5-create-a-wallet-for-a-consumers-user)
   - [Workflow](#workflow)
     - [1. Configure the ODRL policies](#1-configure-the-odrl-policies)
+      - [RustAPITest service policy](#rustapitest-service-policy)
+      - [Scorpio data service policy](#scorpio-data-service-policy)
     - [2. Register the provider and the consumer at the Trust Anchor](#2-register-the-provider-and-the-consumer-at-the-trust-anchor)
     - [3. Create a wallet for the user that operates on behalf of the Consumer](#3-create-a-wallet-for-the-user-that-operates-on-behalf-of-the-consumer)
     - [4. Issue the verifiable credentials](#4-issue-the-verifiable-credentials)
     - [5. Exchange the JWT tokens](#5-exchange-the-jwt-tokens)
     - [6. Verify the policies in action](#6-verify-the-policies-in-action)
+      - [Test 01: Valid token scope (should succeed - 200 OK)](#test-01-valid-token-scope-should-succeed---200-ok)
+      - [Test 02: Invalid token scope (should fail - 403 Forbidden)](#test-02-invalid-token-scope-should-fail---403-forbidden)
+      - [Test 03: Valid token scope with data service (should succeed - 201 Created)](#test-03-valid-token-scope-with-data-service-should-succeed---201-created)
+      - [Test 04: Valid token scope but wrong entity type (should fail - 403 Forbidden)](#test-04-valid-token-scope-but-wrong-entity-type-should-fail---403-forbidden)
+      - [Test 05: Invalid token scope (should fail - 403 Forbidden)](#test-05-invalid-token-scope-should-fail---403-forbidden)
   - [License](#license)
 
 </details>
 
 ## Introduction
 
-This implementation aims to demonstrate how to successfully integrate a custom data service within the FIWARE Data Space Connector (FDSC) and configure custom credential for accessing it through ad-hoc ODRL policies.
+This implementation aims to demonstrate how to successfully integrate a custom data service within the FIWARE Data Space Connector (FDSC) and configure custom credential for accessing it through ad-hoc ODRL policies. The participants included in this scenario are data Provider and a data Consumer.
 
 ## Service integration
 
@@ -422,7 +429,7 @@ Quick deployment scripts are available in the `scripts` folder. The following ta
 | [04.deploy_provider.sh](https://github.com/cristianmartella/fdsc-scenario-02/blob/master/doc/SCRIPTS.MD#provider-deployment) | -p path/to/provider/ (defaults to ../provider)<br>-c [path/to/certificate/details/](https://github.com/cristianmartella/fdsc-scenario-01/blob/master/doc/SCRIPTS.MD#example-provider-certificateconf) | ./04.deploy_provider.sh [-p path/to/provider/ -c path/to/certificate/details/] | Configures and deploys the Provider |
 | 05.deploy_rustapitest.sh | - | ./05.deploy_rustapitest.sh | (Optional) Deploys the RustAPITest service in the [independent pod configuration](#deployment-as-an-independent-service-pod) |
 | [06.deploy_consumer.sh](https://github.com/cristianmartella/fdsc-scenario-01/blob/master/doc/SCRIPTS.MD#consumer-deployment) | -c [/path/to/certificate/details](https://github.com/cristianmartella/fdsc-scenario-01/blob/master/doc/SCRIPTS.MD#example-consumer-certificateconf) | ./06.deploy_consumer.sh [-c /path/to/certificate/details] | Configures and deploys the Consumer |
-| [07.create_wallet.sh](https://github.com/cristianmartella/fdsc-scenario-02/blob/master/doc/SCRIPTS.MD#wallet-identity-creation) | -p wallet-path<br>-n vc-issuer-name (defaults to `consumer`) | [source] ./07.create_wallet.sh [-p wallet-path -n vc-issuer-name] | Creates a wallet for a Consumer's user |
+| [07.create_wallet.sh](https://github.com/cristianmartella/fdsc-scenario-01/blob/master/doc/SCRIPTS.MD#wallet-identity-creation) | -p wallet-path<br>-n vc-issuer-name (defaults to `consumer`) | [source] ./07.create_wallet.sh [-p wallet-path -n vc-issuer-name] | Creates a wallet for a Consumer's user |
 
 The minimal deployment of the FDSC instance using the quick deployment scripts can be accomplished with the following sequence of operations:
 
@@ -462,15 +469,373 @@ Once the FDSC instance is deployed, it is possible to operate the proper configu
 
 ### 1. Configure the ODRL policies
 
+In this scenario the goal is to provide access to users authenticated with `RustApiTestCredential` VC type to the RustAPITest custom service available at `rustapitest.127.0.0.1.nip.io:8080/users`, and map the `UserCredential` VC type to the Scorpio data service available at `mp-data-service.127.0.0.1.nip.io:8080/ngsi-ld/v1/entities`, allowing only to manage entities of a given type.
+
+To this end, it is possible to interact with the PAP (available at `http://pap-provider.127.0.0.1.nip.io:8080/policy`) to POST two ODRL policies. The definition and description of such policies is reported in the following and is compliant with the [ODRL-PAP REGO mappings](https://github.com/wistefan/odrl-pap/blob/main/doc/REGO.md).
+
+#### RustAPITest service policy
+
+To allow traffic from users authenticated as `RustApiTestCredential` there are two constraints to configure: the **permission target** and the **permission assignee**.
+
+The **permission target** allows to define the set of resources the policy refers to, in this case the http path `/users` that identifies the `rustapitest.127.0.0.1.nip.io:8080/users` target.
+
+```json
+"odrl:target": {
+    "@type": "odrl:AssetCollection",
+    "odrl:source": "urn:asset",
+    "odrl:refinement": [
+        {
+            "@type": "odrl:Constraint",
+            "odrl:leftOperand": "http:path",
+            "odrl:operator": {
+                "@id": "http:isInPath"
+            },
+            "odrl:rightOperand": {
+                "@value": "/users",
+                "@type": "xsd:string"
+            }
+        }
+    ]
+}
+```
+
+The **permission assignee** allows to constrain the pool of credentials permitted by this policy, in this case the `RustApiTestCredential`.
+
+```json
+"odrl:assignee": {
+    "@type": "odrl:PartyCollection",
+    "odrl:source": "urn:user",
+    "odrl:refinement": {
+        "@type": "odrl:Constraint",
+        "odrl:leftOperand": {
+            "@id": "vc:type"
+        },
+        "odrl:operator": {
+            "@id": "odrl:hasPart"
+        },
+        "odrl:rightOperand": {
+            "@value": "RustApiTestCredential",
+            "@type": "xsd:string"
+        }
+    }
+}
+```
+
+Follows the full policy JSON definition:
+
+```json
+{ 
+    "@context": {
+        "dc": "http://purl.org/dc/elements/1.1/",
+        "dct": "http://purl.org/dc/terms/",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "odrl": "http://www.w3.org/ns/odrl/2/",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "skos": "http://www.w3.org/2004/02/skos/core#"
+    },
+    "@id": "https://mp-operation.org/policy/common/type",
+    "@type": "odrl:Policy",
+    "odrl:permission": {
+        "odrl:assigner": {
+            "@id": "https://www.mp-operation.org/"
+        },
+        "odrl:target": {
+            "@type": "odrl:AssetCollection",
+            "odrl:source": "urn:asset",
+            "odrl:refinement": [
+                {
+                    "@type": "odrl:Constraint",
+                    "odrl:leftOperand": "http:path",
+                    "odrl:operator": {
+                        "@id": "http:isInPath"
+                    },
+                    "odrl:rightOperand": {
+                        "@value": "/users",
+                        "@type": "xsd:string"
+                    }
+                }
+            ]
+        },
+        "odrl:assignee": {
+            "@type": "odrl:PartyCollection",
+            "odrl:source": "urn:user",
+            "odrl:refinement": {
+                "@type": "odrl:Constraint",
+                "odrl:leftOperand": {
+                    "@id": "vc:type"
+                },
+                "odrl:operator": {
+                    "@id": "odrl:hasPart"
+                },
+                "odrl:rightOperand": {
+                    "@value": "RustApiTestCredential",
+                    "@type": "xsd:string"
+                }
+            }
+        },
+        "odrl:action": {
+            "@id": "odrl:use"
+        }
+    }
+}
+```
+
+#### Scorpio data service policy
+
+Similarly as above, to allow traffic from users authenticated as `UserCredential` there are two constraints to configure: the **permission target** and the **permission assignee**.
+
+The **permission target** allows to define the set of resources the policy refers to, in this case the http path `/ngsi-ld/v1/entities` that identifies the `mp-data-service.127.0.0.1.nip.io:8080/ngsi-ld/v1/entities` target. An additional contraint refers to the permitted entity type (`K8SCluster`) that the designated users can exchange with the target data service. Hence, the permission target will feature the logic AND of two constraints.
+
+```json
+"odrl:target": {
+    "@type": "odrl:AssetCollection",
+    "odrl:source": "urn:asset",
+    "odrl:refinement": [
+        {
+            "@type": "odrl:Constraint",
+            "odrl:leftOperand": "http:path",
+            "odrl:operator": {
+                "@id": "http:isInPath"
+            },
+            "odrl:rightOperand": {
+                "@value": "/ngsi-ld/v1/entities",
+                "@type": "xsd:string"
+            }
+        },
+        {
+            "@type": "odrl:Constraint",
+            "odrl:leftOperand": "ngsi-ld:entityType",
+            "odrl:operator": {
+                "@id": "odrl:eq"
+            },
+            "odrl:rightOperand": "K8SCluster"
+        }
+    ]
+}
+```
+
+The **permission assignee** allows to constrain the pool of credentials permitted by this policy, in this case the `UserCredential`.
+
+```json
+"odrl:assignee": {
+    "@type": "odrl:PartyCollection",
+    "odrl:source": "urn:user",
+    "odrl:refinement": {
+        "@type": "odrl:Constraint",
+        "odrl:leftOperand": {
+            "@id": "vc:type"
+        },
+        "odrl:operator": {
+            "@id": "odrl:hasPart"
+        },
+        "odrl:rightOperand": {
+            "@value": "UserCredential",
+            "@type": "xsd:string"
+        }
+    }
+}
+```
+
+Follows the full policy JSON definition:
+
+```json
+{ 
+    "@context": {
+        "dc": "http://purl.org/dc/elements/1.1/",
+        "dct": "http://purl.org/dc/terms/",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "odrl": "http://www.w3.org/ns/odrl/2/",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "skos": "http://www.w3.org/2004/02/skos/core#"
+    },
+    "@id": "https://mp-operation.org/policy/common/type",
+    "@type": "odrl:Policy",
+    "odrl:permission": {
+        "odrl:assigner": {
+            "@id": "https://www.mp-operation.org/"
+        },
+        "odrl:target": {
+            "@type": "odrl:AssetCollection",
+            "odrl:source": "urn:asset",
+            "odrl:refinement": [
+                {
+                    "@type": "odrl:Constraint",
+                    "odrl:leftOperand": "http:path",
+                    "odrl:operator": {
+                        "@id": "http:isInPath"
+                    },
+                    "odrl:rightOperand": {
+                        "@value": "/ngsi-ld/v1/entities",
+                        "@type": "xsd:string"
+                    }
+                },
+                {
+                    "@type": "odrl:Constraint",
+                    "odrl:leftOperand": "ngsi-ld:entityType",
+                    "odrl:operator": {
+                        "@id": "odrl:eq"
+                    },
+                    "odrl:rightOperand": "K8SCluster"
+                }
+            ]
+        },
+        "odrl:assignee": {
+            "@type": "odrl:PartyCollection",
+            "odrl:source": "urn:user",
+            "odrl:refinement": {
+                "@type": "odrl:Constraint",
+                "odrl:leftOperand": {
+                    "@id": "vc:type"
+                },
+                "odrl:operator": {
+                    "@id": "odrl:hasPart"
+                },
+                "odrl:rightOperand": {
+                    "@value": "UserCredential",
+                    "@type": "xsd:string"
+                }
+            }
+        },
+        "odrl:action": {
+            "@id": "{{04_ODRL-ACTION}}"
+        }
+    }
+}
+```
+
 ### 2. Register the provider and the consumer at the Trust Anchor
+
+The participants can be registrated at the Trust Anchor by POSTing their DIDs at the Trusted Issuers List service endpoint `http://til.127.0.0.1.nip.io:8080/issuer`. The JSON payload is structured as follows:
+
+```json
+{
+    "did": "<PARTICIPANT-DID>",
+    "credentials": []
+}
+```
+
+Consumer and Provider's DIDs are conveniently located in the respective identity folders in a file called `did.key`. DID keys are also displayed after the successful deployment of the Consumer and the Provider.
 
 ### 3. Create a wallet for the user that operates on behalf of the Consumer
 
+This step is documented in the [fdsc-scenario-01 repository](https://github.com/cristianmartella/fdsc-scenario-01/blob/master/doc/provider/PROVIDER.MD#test-authorized-access) and can be conveniently simplified by running the script `07.create_wallet.sh`, as documented [above](#quick-deployment-scripts).
+
 ### 4. Issue the verifiable credentials
+
+To issue a VC of type `UserCredential`, run the following command:
+
+```bash
+export USER_CREDENTIAL=$(./get_credential_for_consumer.sh http://keycloak-consumer.127.0.0.1.nip.io:8080 user-credential); echo ${USER_CREDENTIAL}
+```
+
+Similarly to create a VC of `RustApiTestCredential`, the following command is used instead:
+
+```bash
+export RAT_CREDENTIAL=$(./get_credential_for_consumer.sh http://keycloak-consumer.127.0.0.1.nip.io:8080 rustapitest-credential); echo ${RAT_CREDENTIAL}
+```
 
 ### 5. Exchange the JWT tokens
 
+To exchange a JWT token with the `UserCredential` VC issued in [step 4](#4-issue-the-verifiable-credentials) for the user with the identity wallet created in [step 3](#3-create-a-wallet-for-the-user-that-operates-on-behalf-of-the-consumer), the following command is used:
+
+```bash
+export USER_ACCESS_TOKEN=$(./get_access_token_oid4vp.sh http://mp-data-service.127.0.0.1.nip.io:8080 $USER_CREDENTIAL UserCredential ../wallet-identity); echo $USER_ACCESS_TOKEN
+```
+
+Similarly, the following command allows to exchange a JWT token for the same wallet with the `RustApiTestCredential` VC:
+
+```bash
+export RAT_ACCESS_TOKEN=(./get_access_token_oid4vp.sh http://rustapitest.127.0.0.1.nip.io:8080 $RAT_CREDENTIAL RustApiTestCredential ../wallet-identity); echo $RAT_ACCESS_TOKEN
+```
+
+These JWT tokens can be embedded as bearer authentication tokens in the next step to authorize the requests.
+
 ### 6. Verify the policies in action
+
+To verify the correct execution of the policies, the following five tests are performed.
+
+> [!Note]
+> The payload of the following POST requests is merely intended for demo purposes.
+
+#### Test 01: Valid token scope (should succeed - 200 OK)
+
+```bash
+curl -X POST http://rustapitest.127.0.0.1.nip.io:8080/users \
+  -H 'accept: */*' \
+  -H 'authorization: Bearer $RAT_ACCESS_TOKEN' \
+  -H 'content-type: application/json' \
+  -d '
+    {
+        "id": "urn:ngsi-ld:K8SCluster:cluster-1",
+        "type": "K8SCluster",
+        "name": "John Doe",
+        "email": "qwer@qwer.qw"
+    }'
+```
+
+#### Test 02: Invalid token scope (should fail - 403 Forbidden)
+
+```bash
+curl -X POST http://rustapitest.127.0.0.1.nip.io:8080/users \
+  -H 'accept: */*' \
+  -H 'authorization: Bearer $USER_ACCESS_TOKEN' \
+  -H 'content-type: application/json' \
+  -d '
+    {
+        "id": "urn:ngsi-ld:K8SCluster:cluster-1",
+        "type": "K8SCluster",
+        "name": "John Doe",
+        "email": "qwer@qwer.qw"
+    }'
+```
+
+#### Test 03: Valid token scope with data service (should succeed - 201 Created)
+
+```bash
+curl -X POST http://mp-data-service.127.0.0.1.nip.io:8080/users \
+  -H 'accept: */*' \
+  -H 'authorization: Bearer $USER_ACCESS_TOKEN' \
+  -H 'content-type: application/json' \
+  -d '
+    {
+        "id": "urn:ngsi-ld:K8SCluster:cluster-1",
+        "type": "K8SCluster",
+        "name": "John Doe",
+        "email": "qwer@qwer.qw"
+    }'
+```
+
+#### Test 04: Valid token scope but wrong entity type (should fail - 403 Forbidden)
+
+```bash
+curl -X POST http://mp-data-service.127.0.0.1.nip.io:8080/users \
+  -H 'accept: */*' \
+  -H 'authorization: Bearer $USER_ACCESS_TOKEN' \
+  -H 'content-type: application/json' \
+  -d '
+    {
+        "id": "urn:ngsi-ld:K8SCluster:cluster-1",
+        "type": "K8SCluster-2",
+        "name": "John Doe",
+        "email": "qwer@qwer.qw"
+    }'
+```
+
+#### Test 05: Invalid token scope (should fail - 403 Forbidden)
+
+```bash
+curl -X POST http://mp-data-service.127.0.0.1.nip.io:8080/users \
+  -H 'accept: */*' \
+  -H 'authorization: Bearer $RAT_ACCESS_TOKEN' \
+  -H 'content-type: application/json' \
+  -d '
+    {
+        "id": "urn:ngsi-ld:K8SCluster:cluster-1",
+        "type": "K8SCluster",
+        "name": "John Doe",
+        "email": "qwer@qwer.qw"
+    }'
+```
 
 ## License
 
