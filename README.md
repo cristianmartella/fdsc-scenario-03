@@ -309,7 +309,7 @@ To issue `RustApiTestCredential` verifiable credentials, the Keycloak realm need
 The following lines should be embedded in the `Keycloack.realm.clients` JSON payload.
 
 > [!Note]
-> The following snippets are simplified to highlight the location of the changes in the *standard* definition. The complete code is documented at the [fdsc-scenario-01 repository](https://github.com/cristianmartella/fdsc-scenario-01/blob/master/doc/consumer/CONSUMER.MD#keycloak-realm-configuration).
+> The following snippets are simplified to highlight the location of the changes in the *standard* definition. The complete code is documented in the [fdsc-scenario-01 repository](https://github.com/cristianmartella/fdsc-scenario-01/blob/master/doc/consumer/CONSUMER.MD#keycloak-realm-configuration).
 
 ```json
 {
